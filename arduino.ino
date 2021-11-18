@@ -1,68 +1,64 @@
 #include <LiquidCrystal.h>
 
-LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+LiquidCrystal lcd (12, 11, 5, 4, 3, 2);
 
-const int switchPin = 6;
-int switchState = 0;
-int prevSwitchState = 0;
-int reply;
+char c[33];
+char* split_data[2];
+char* print_word;
 
-void setutp()
-{
+void setup() {
 
+    Serial.begin(9600);
     lcd.begin(16, 2);
-    pinMode(switchPin, INPUT);
-    lcd.print("Ask the");
-    lcd.setCursor(0, 1);
-    lcd.print("Crystal Ball!");
+    lcd.clear();
+}
+
+void printAdScroll(int seconds) {
+
+    float count = 0.0;
+    while (count <= seconds) {
+        lcd.scrollDisplayLeft();
+        delay(200);
+        count += 0.2; 
+    }
+    lcd.clear();
 }
 
 void loop() {
-    switchState = digitalRead(switchPin);
-    if (switchState != prevSwitchState) {
-        if (switchState == LOW) {
-            reply = random(8);
-        
-            lcd.clear();
-            lcd.setCursor(0, 0);
-            lcd.print("The ball says: ");
-            lcd.setCursor(0, 1);
 
-            switch(reply) {
-                case 0:
-                lcd.print("yes");
-                break;
+    int seconds;
 
-                case 1:
-                lcd.print("Most likely");
-                break;
-
-                case 2:
-                lcd.print("Certainly");
-                break;
-
-                case 3:
-                lcd.print("Outlook good");
-                break;
-
-                case 4:
-                lcd.print("Unsure");
-                break;
-
-                case 5:
-                lcd.print("Ask agasin");
-                break;
-
-                case 6:
-                lcd.print("Doubtful");
-                break;
-
-                case 7:
-                lcd.print("No");
-                break;
-            }
-
+    while (Serial.available()) {
+        delay(100);
+  
+        int i = 0;
+        while (Serial.available() > 0) {
+            c[i++] = Serial.read();
         }
+        
+        for(; i < 33; i++) {
+            c[i] = ' ';
+        }
+
+        char* split = strtok(c, "-");
+
+        int k = 0;
+        while(split) {
+            split_data[k++] = split;
+            split = strtok(NULL, "-");
+        }
+
+        print_word = split_data[1];
+        int seconds = atoi(split_data[0]);
+
+        lcd.setCursor(15,0);
+        for (i = 0; i < 16; i++) {
+          lcd.write(print_word[i]);
+        }
+
+ 
+        printAdScroll(seconds);
+        
     }
-    prevSwitchState = switchState;
+    delay(100);
 }
