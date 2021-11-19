@@ -19,7 +19,7 @@ void printPort(string word) {
     int serial_port = open("/dev/cu.usbmodem11401", O_RDWR);
     
     if (serial_port < 0) {
-        cout << "Error " << endl;  
+        cout << "Arduino not found" << endl;  
     }
     
     sleep(2);
@@ -45,7 +45,6 @@ void createCompany(vector<Company>& array) {
     cout << "Pay ->";
     cin >> price;
 
-    //Tar inte emot negativt värde
     while (price <= 0)
     {
         cout << "Invalid Input!" << endl;
