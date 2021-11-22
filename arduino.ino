@@ -2,7 +2,7 @@
 
 LiquidCrystal lcd (12, 11, 5, 4, 3, 2);
 
-char c[33];
+char c[34];
 char* split_data[2];
 char* print_word;
 
@@ -36,7 +36,7 @@ void loop() {
             c[i++] = Serial.read();
         }
         
-        for(; i < 33; i++) {
+        for(; i < 34; i++) {
             c[i] = ' ';
         }
 
@@ -51,14 +51,11 @@ void loop() {
         print_word = split_data[1];
         int seconds = atoi(split_data[0]);
 
-        lcd.setCursor(15,0);
-        for (i = 0; i < 16; i++) {
+        lcd.setCursor(10,0);
+        for (i = 0; i < 30; i++) {
           lcd.write(print_word[i]);
         }
-
- 
-        printAdScroll(seconds);
-        
+        printAdScroll(seconds);  
     }
     delay(100);
 }
